@@ -1,23 +1,22 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
-# Vagrantfile API/syntax version. Don't touch unless you know what you're doing!
-VAGRANTFILE_API_VERSION = "2"
+KUMA_VERSION = "0.7.1"
+KUMA_HOME    = "/opt/kuma"
 
-Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+KUMA_CONTROL_PLANE_IP      = "192.168.33.10"
 
-    # create gitlab node
-  config.vm.define :gitlab do |gitlab|
-    gitlab.vm.box = "centos/7"    
-    gitlab.vm.hostname = "vg-gitlabce"        
-    gitlab.vm.box_check_update = true # disable automatic box update checking
-    config.vm.network :private_network, ip: "192.168.16.18"
-    
-    gitlab.vm.provider "virtualbox" do |vb|
-      vb.memory = 4096
-      vb.cpus = 2  
-    end
+Vagrant.configure("2") do |config|
 
-    gitlab.vm.provision :shell, path: "provisioning/bootstrap-gitlab.sh"
+  config.vm.provider "virtualbox" do |v|
+    v.memory = 4096
+    v.cpus = 1
   end
-end
+
+  config.vm.define "vg-droneci" do |node| 
+    node.vm.box = "centos/8"
+    node.vm.hostname = "vg-droneci"
+    node.vm.network :private_network, ip: DRONECI_IP
+  end
+
+end 
